@@ -1,0 +1,160 @@
+<!-- Sertakan pustaka A-Frame dari CDN -->
+<script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.3.0/dist/aframe-master.min.js"></script>
+
+<!--<script src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>-->
+
+<!-- Sertakan skrip ekstensi kustom A-Frame AR.js NFT -->
+<script src="a-frame/aframe-ar-nft.js"></script>
+
+<!-- Bagian JavaScript -->
+<script>
+  // Eksekusi kode berikut saat jendela selesai dimuat
+  window.onload = function () {
+    // Daftarkan komponen A-Frame kustom bernama 'videohandler'
+    AFRAME.registerComponent("videohandler", {
+      // Fungsi inisialisasi untuk komponen
+      init: function () {
+        // Referensi ke elemen penanda (NFT)
+        var marker = this.el;
+
+        // Referensi ke elemen video dengan ID 'vid'
+        this.vid = document.querySelector("#vid");
+
+        // Penanganan acara saat penanda ditemukan
+        marker.addEventListener(
+          "markerFound",
+          function () {
+            // Putar video terkait saat penanda ditemukan
+            this.vid.play();
+          }.bind(this)
+        );
+
+        // Penanganan acara saat penanda hilang
+        marker.addEventListener(
+          "markerLost",
+          function () {
+            // Jeda video dan atur waktu saat ini ke 0 saat penanda hilang
+            this.vid.pause();
+            this.vid.currentTime = 0;
+          }.bind(this)
+        );
+      },
+    });
+  };
+</script>
+
+<!-- Bagian Styling -->
+<style>
+  /* Gaya untuk loader AR.js */
+  .arjs-loader {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .arjs-loader div {
+    text-align: center;
+    font-size: 1.25em;
+    color: white;
+  }
+</style>
+
+<!-- Bagian Body -->
+<body style="margin: 0px; overflow: hidden">
+  <!-- Layar penggantian AR.js -->
+  <div class="arjs-loader">
+    <div>Loading, please wait...</div>
+  </div>
+
+  <!-- Penyiapan adegan A-Frame -->
+  <a-scene
+    vr-mode-ui="enabled: false;"
+    renderer="antialias: true; alpha: true; precision: medium;"
+    embedded
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+  >
+    <!-- Bagian Aset untuk video pertama -->
+    <a-assets>
+      <video
+        src="assets/vid_kaka.mp4"
+        preload="auto"
+        id="vid1"
+        response-type="arraybuffer"
+        loop
+        crossorigin
+        webkit-playsinline
+        autoplay
+        muted
+        playsinline
+      ></video>
+    </a-assets>
+
+    <!-- Penanda NFT pertama dengan komponen penangan video terkait -->
+    <a-nft
+      videohandler
+      type="nft"
+      url="assets/nft/kaka"
+      smooth="true"
+      smoothCount="10"
+      smoothTolerance="0.01"
+      smoothThreshold="5"
+    >
+      <!-- Elemen video pertama yang ditampilkan saat deteksi penanda pertama -->
+      <a-video
+        src="#vid1"
+        position="50 150 -100"
+        rotation="90 0 180"
+        width="300"
+        height="175"
+      >
+      </a-video>
+    </a-nft>
+
+    <!-- Bagian Aset untuk video kedua -->
+    <a-assets>
+      <video
+        src="assets/vid_nrt.mp4"
+        preload="auto"
+        id="vid2"
+        response-type="arraybuffer"
+        loop
+        crossorigin
+        webkit-playsinline
+        autoplay
+        muted
+        playsinline
+      ></video>
+    </a-assets>
+
+    <!-- Penanda NFT kedua dengan komponen penangan video terkait -->
+    <a-nft
+      videohandler
+      type="nft"
+      url="assets/nft/nrt"
+      smooth="true"
+      smoothCount="10"
+      smoothTolerance="0.01"
+      smoothThreshold="5"
+    >
+      <!-- Elemen video kedua yang ditampilkan saat deteksi penanda kedua -->
+      <a-video
+        src="#vid2"
+        position="50 150 -100"
+        rotation="90 0 180"
+        width="300"
+        height="175"
+      >
+      </a-video>
+    </a-nft>
+
+    <!-- Entitas kamera untuk adegan -->
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
